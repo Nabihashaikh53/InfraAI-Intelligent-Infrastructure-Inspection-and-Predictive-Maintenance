@@ -1,9 +1,11 @@
 from fastapi import FastAPI
 from app.api.auth_routes import router as auth_router
+from app.api.asset_routes import router as asset_router
 
 app = FastAPI(title="InfraAI API")
 
 app.include_router(auth_router)
+app.include_router(asset_router)
 
 
 @app.get("/")
