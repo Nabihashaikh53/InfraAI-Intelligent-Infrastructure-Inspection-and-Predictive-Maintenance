@@ -5,6 +5,10 @@ from app.database.connection import db
 async def init_indexes():
     await db.users.create_index("email", unique=True)
     print("Created unique index on users.email")
+
+    await db.assets.create_index("assetId", unique=True)
+    print("Created unique index on assets.assetId")
+
     print("Index setup complete.")
 
 
