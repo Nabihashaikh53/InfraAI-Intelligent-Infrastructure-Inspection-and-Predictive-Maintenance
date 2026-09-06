@@ -3,6 +3,12 @@ from datetime import datetime
 from typing import Optional
 
 
+class ImageQualityOut(BaseModel):
+    score: int
+    status: str
+    issues: list[str]
+
+
 class InspectionOut(BaseModel):
     id: str
     inspectionId: str
@@ -11,3 +17,4 @@ class InspectionOut(BaseModel):
     imageUrl: str
     inspectionDate: datetime
     status: str
+    imageQuality: Optional[ImageQualityOut] = None
