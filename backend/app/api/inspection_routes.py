@@ -4,12 +4,14 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form
 from app.schemas.inspection_schema import InspectionOut
 from app.api.auth_routes import get_current_user
 from app.services.file_storage import save_uploaded_image
-from app.database.asset_repository import get_asset_by_id
+from app.services.image_quality import assess_image_quality
 from app.database.inspection_repository import (
     create_inspection,
     get_inspection_by_id,
     get_inspections_by_asset,
+    update_inspection,
 )
+
 
 router = APIRouter(tags=["inspections"])
 
@@ -23,8 +25,8 @@ def _to_inspection_out(doc: dict) -> InspectionOut:
         imageUrl=doc.get("imageUrl", ""),
         inspectionDate=doc.get("inspectionDate"),
         status=doc.get("status", "uploaded"),
+        imageQuality=doc.get("imageQuality"),
     )
-
 
 @router.post("/api/inspections/upload", response_model=InspectionOut, status_code=201)
 async def upload_inspection_image(
@@ -65,3 +67,17 @@ async def list_inspections_for_asset_route(
 ):
     inspections = await get_inspections_by_asset(asset_id)
     return [_to_inspection_out(i) for i in inspections]
+@router.post("/api/inspections/{inspection_id}/quality-check", response_model=InspectionOut)
+async def quality_check_route(
+    inspection_id: str, current_user: dict = Depends(get_current_user)
+):
+    inspection = await get_inspection_by_id(inspection_id)
+    if inspection is None:
+        raise HTTPException(status_code=404, detail="Inspection not found")
+
+    quality_result = assess_image_quality(inspection["imageUrl"])
+    updated = await update_inspection(inspection_id, {"imageQuality": quality_result})
+    if updated is None:
+        raise HTTPException(status_code=404, detail="Inspection not found")
+
+    return _to_inspection_out(updated)
