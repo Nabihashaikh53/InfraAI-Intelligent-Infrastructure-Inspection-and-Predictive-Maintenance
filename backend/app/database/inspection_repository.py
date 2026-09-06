@@ -41,3 +41,21 @@ async def update_inspection(inspection_id: str, update_data: dict) -> dict | Non
     raise NotImplementedError("update_inspection: waiting on database implementation")
 
     return [doc async for doc in cursor]
+
+async def update_inspection(inspection_id: str, update_data: dict) -> dict | None:
+    try:
+        object_id = ObjectId(inspection_id)
+    except InvalidId:
+        return None
+
+    update_data["updatedAt"] = datetime.now(timezone.utc)
+
+    result = await inspections_collection.update_one(
+        {"_id": object_id},
+        {"$set": update_data}
+    )
+
+    if result.matched_count == 0:
+        return None
+
+    return await inspections_collection.find_one({"_id": object_id})
