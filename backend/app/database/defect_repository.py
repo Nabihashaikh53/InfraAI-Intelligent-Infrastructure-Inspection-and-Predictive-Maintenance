@@ -4,10 +4,20 @@ from app.database.connection import db
 
 
 defects_collection = db.defects
+model_versions_collection = db.modelVersions
+
+
+async def create_defect(defect_data: dict) -> dict:
+    defect_data["createdAt"] = datetime.now(timezone.utc)
+
+    result = await defects_collection.insert_one(defect_data)
+
+    return await defects_collection.find_one(
+        {"_id": result.inserted_id}
+    )
 
 
 async def create_defects(defects: list[dict]) -> list[dict]:
-
     if not defects:
         return []
 
@@ -42,4 +52,19 @@ async def delete_defects_by_inspection(
 
     await defects_collection.delete_many(
         {"inspectionId": inspection_id}
+    )
+
+
+async def create_model_version(version_data: dict) -> dict:
+    version_data["trainedAt"] = version_data.get(
+        "trainedAt",
+        datetime.now(timezone.utc)
+    )
+
+    result = await model_versions_collection.insert_one(
+        version_data
+    )
+
+    return await model_versions_collection.find_one(
+        {"_id": result.inserted_id}
     )
