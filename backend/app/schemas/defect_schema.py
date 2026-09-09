@@ -15,6 +15,7 @@ class DefectOut(BaseModel):
     defectType: str
     confidence: float
     boundingBox: BoundingBox
+    severity: str | None = None
     detectedAt: datetime
 
 

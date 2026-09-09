@@ -1,10 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.auth_routes import get_current_user
+
 from app.ai.defect_detection import detect_defects
 
 from app.database.inspection_repository import (
     get_inspection_by_id,
+    update_inspection,
 )
 
 from app.database.defect_repository import (
@@ -13,24 +15,26 @@ from app.database.defect_repository import (
     delete_defects_by_inspection,
 )
 
+from app.services.severity_engine import calculate_severity
+from app.services.risk_engine import calculate_risk, risk_explanation
+
 from app.schemas.defect_schema import (
     BoundingBox,
     DefectOut,
     AnalysisOut,
 )
 
-
 router = APIRouter(tags=["defects"])
 
 
 def _to_defect_out(doc: dict) -> DefectOut:
-
     return DefectOut(
         id=str(doc["_id"]),
         inspectionId=doc["inspectionId"],
         defectType=doc["defectType"],
         confidence=doc["confidence"],
         boundingBox=BoundingBox(**doc["boundingBox"]),
+        severity=doc.get("severity"),
         detectedAt=doc["detectedAt"],
     )
 
@@ -43,7 +47,6 @@ async def analyze_inspection(
     inspection_id: str,
     current_user: dict = Depends(get_current_user),
 ):
-
     inspection = await get_inspection_by_id(inspection_id)
 
     if inspection is None:
@@ -58,14 +61,12 @@ async def analyze_inspection(
         )
 
     except FileNotFoundError as error:
-
         raise HTTPException(
             status_code=404,
             detail=str(error),
         )
 
     except Exception:
-
         raise HTTPException(
             status_code=500,
             detail="Defect detection failed",
@@ -86,17 +87,38 @@ async def analyze_inspection(
         if "crack" in defect_type.lower():
             defect_type = "crack"
 
-        defects_to_store.append(
-            {
-                "inspectionId": inspection_id,
-                "defectType": defect_type,
-                "confidence": detection["confidence"],
-                "boundingBox": detection["boundingBox"],
-            }
+        defect_data = {
+            "inspectionId": inspection_id,
+            "defectType": defect_type,
+            "confidence": detection["confidence"],
+            "boundingBox": detection["boundingBox"],
+        }
+
+        defect_data["severity"] = calculate_severity(
+            detection["type"],
+            detection["confidence"],
+            detection["boundingBox"],
         )
+
+        defects_to_store.append(defect_data)
 
     created_defects = await create_defects(
         defects_to_store
+    )
+
+    risk_result = calculate_risk(created_defects)
+
+    await update_inspection(
+        inspection_id,
+        {
+            "overallRiskScore": risk_result["score"],
+            "riskLevel": risk_result["category"],
+            "riskBreakdown": risk_result["breakdown"],
+            "riskExplanation": risk_explanation(
+                risk_result,
+                len(created_defects),
+            ),
+        },
     )
 
     return AnalysisOut(
@@ -117,7 +139,6 @@ async def get_inspection_defects(
     inspection_id: str,
     current_user: dict = Depends(get_current_user),
 ):
-
     inspection = await get_inspection_by_id(inspection_id)
 
     if inspection is None:
