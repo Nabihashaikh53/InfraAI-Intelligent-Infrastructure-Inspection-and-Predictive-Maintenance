@@ -12,6 +12,9 @@ async def init_indexes():
     await db.inspections.create_index("assetId")
     print("Created index on inspections.assetId")
 
+    await db.defects.create_index("inspectionId")
+    print("Created index on defects.inspectionId")
+
     print("Index setup complete.")
 
 
