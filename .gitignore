@@ -16,6 +16,7 @@ frontend/dist/
 frontend/build/
 .vscode/
 .idea/
+backend/app/ai/weights/*.pt
 ml/dataset/*
 ml/models/*
 runs/
