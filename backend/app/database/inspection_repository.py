@@ -37,6 +37,8 @@ async def get_inspections_by_asset(asset_id: str) -> list[dict]:
     cursor = inspections_collection.find(
         {"assetId": asset_id}
     ).sort("inspectionDate", -1)
+async def update_inspection(inspection_id: str, update_data: dict) -> dict | None:
+    raise NotImplementedError("update_inspection: waiting on database implementation")
 
     return [doc async for doc in cursor]
 
