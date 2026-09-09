@@ -1,70 +1,37 @@
 from datetime import datetime, timezone
+from typing import Any
+from bson import ObjectId
 
 from app.database.connection import db
 
-
-defects_collection = db.defects
-model_versions_collection = db.modelVersions
-
-
-async def create_defect(defect_data: dict) -> dict:
-    defect_data["createdAt"] = datetime.now(timezone.utc)
-
-    result = await defects_collection.insert_one(defect_data)
-
-    return await defects_collection.find_one(
-        {"_id": result.inserted_id}
-    )
-
-
-async def create_defects(defects: list[dict]) -> list[dict]:
-    if not defects:
-        return []
-
+async def replace_analysis_for_inspection(
+    inspection_id: str,
+    defects: list[dict[str, Any]],
+    severity: dict[str, Any],
+    risk: dict[str, Any],
+    model_version: str,
+) -> datetime:
+    # Replace `db` with the database object already used by this repository.
     now = datetime.now(timezone.utc)
+    object_id = ObjectId(inspection_id)
+    await db.defects.delete_many({"inspectionId": object_id})
 
-    for defect in defects:
-        defect["detectedAt"] = now
+    if defects:
+        for defect in defects:
+            defect["inspectionId"] = object_id
+            defect["createdAt"] = now
+        await db.defects.insert_many(defects)
 
-    result = await defects_collection.insert_many(defects)
-
-    cursor = defects_collection.find(
-        {"_id": {"$in": result.inserted_ids}}
+    result = await db.inspections.update_one(
+        {"_id": object_id},
+        {"$set": {
+            "analysisStatus": "completed",
+            "severity": severity,
+            "risk": risk,
+            "modelVersion": model_version,
+            "analyzedAt": now,
+        }},
     )
-
-    return [doc async for doc in cursor]
-
-
-async def get_defects_by_inspection(
-    inspection_id: str,
-) -> list[dict]:
-
-    cursor = defects_collection.find(
-        {"inspectionId": inspection_id}
-    ).sort("detectedAt", -1)
-
-    return [doc async for doc in cursor]
-
-
-async def delete_defects_by_inspection(
-    inspection_id: str,
-) -> None:
-
-    await defects_collection.delete_many(
-        {"inspectionId": inspection_id}
-    )
-
-
-async def create_model_version(version_data: dict) -> dict:
-    version_data["trainedAt"] = version_data.get(
-        "trainedAt",
-        datetime.now(timezone.utc)
-    )
-
-    result = await model_versions_collection.insert_one(
-        version_data
-    )
-
-    return await model_versions_collection.find_one(
-        {"_id": result.inserted_id}
-    )
+    if result.matched_count != 1:
+        raise LookupError("Inspection was not found.")
+    return now
