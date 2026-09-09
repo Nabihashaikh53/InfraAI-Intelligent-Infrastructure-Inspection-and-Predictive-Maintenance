@@ -16,3 +16,8 @@ frontend/dist/
 frontend/build/
 .vscode/
 .idea/
+ml/dataset/*
+ml/models/*
+runs/
+backend/uploads/*
+!backend/uploads/.gitkeep
