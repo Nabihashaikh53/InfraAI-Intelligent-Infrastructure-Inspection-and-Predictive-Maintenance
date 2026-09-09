@@ -6,6 +6,7 @@ from fastapi.requests import Request
 from app.api.auth_routes import router as auth_router
 from app.api.asset_routes import router as asset_router
 from app.api.inspection_routes import router as inspection_router
+from app.api.defect_routes import router as defect_router
 
 app = FastAPI(title="InfraAI API")
 
@@ -20,6 +21,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(asset_router)
 app.include_router(inspection_router)
+app.include_router(defect_router)
 
 
 @app.exception_handler(Exception)
