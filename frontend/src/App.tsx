@@ -8,6 +8,9 @@ import Assets from "./pages/Assets";
 import NewInspection from "./pages/NewInspection";
 import Detection from "./pages/Detection";
 import Analysis from "./pages/Analysis";
+import AssetDetail from "./pages/AssetDetail";
+import Maintenance from "./pages/Maintenance";
+import ReportView from "./pages/ReportView";
 
 export default function App() {
   return (
@@ -42,6 +45,22 @@ export default function App() {
             path="*"
             element={<Navigate to="/dashboard" replace />}
           />
+          
+          <Route
+            path="/assets/:id"
+            element={<AssetDetail />}
+          />
+          
+          <Route
+           path="/maintenance"
+           element={<Maintenance />}
+          />
+
+          <Route
+           path="/reports/:inspectionId"
+           element={<ReportView />}
+          />
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>

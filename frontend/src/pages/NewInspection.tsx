@@ -49,6 +49,7 @@ export default function NewInspection() {
 
   const [uploading, setUploading] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [createdInspectionId, setCreatedInspectionId] = useState("");
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -197,11 +198,13 @@ export default function NewInspection() {
 
       console.log("Inspection created:", response);
 
-      if (!response?.id) {
-        throw new Error(
-          "The backend did not return the inspection database ID.",
-        );
-      }
+       if (!response?.id) {
+       throw new Error(
+      "The backend did not return the inspection database ID.",
+     );
+     }
+
+setCreatedInspectionId(response.id);
 
       setSuccess(
         `Inspection ${response.inspectionId} created for ${response.assetId}. Opening defect detection...`,
@@ -679,6 +682,21 @@ export default function NewInspection() {
           )}
 
         </div>
+
+        {createdInspectionId && (
+        <div className="mt-4 rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
+        <p className="text-sm text-slate-600">
+        Inspection created successfully.
+        </p>
+
+         <Link
+         to={`/reports/${createdInspectionId}`}
+         className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-[#376CF3] hover:underline"
+         >
+         View full report →
+        </Link>
+        </div>
+      )}
 
         {/* FOOTER HELP */}
 
