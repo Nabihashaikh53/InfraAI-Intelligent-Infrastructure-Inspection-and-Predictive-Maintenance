@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -10,15 +12,39 @@ class BoundingBox(BaseModel):
 
 
 class DefectOut(BaseModel):
-    id: str
+    id: Optional[str] = None
     inspectionId: str
     defectType: str
     confidence: float
     boundingBox: BoundingBox
-    detectedAt: datetime
+    severity: Optional[str] = None
+    detectedAt: Optional[datetime] = None
+
+
+class SeverityResult(BaseModel):
+    score: int
+    level: str
+    explanation: Optional[str] = None
+
+
+class RiskBreakdown(BaseModel):
+    severityContribution: int
+    recurrenceContribution: int
+    deteriorationContribution: int
+
+
+class RiskResult(BaseModel):
+    score: int
+    category: str
+    breakdown: RiskBreakdown
+    explanation: Optional[str] = None
 
 
 class AnalysisOut(BaseModel):
     inspectionId: str
-    totalDefects: int
-    defects: list[DefectOut]
+    analysisStatus: str
+    defects: list[dict]
+    severity: SeverityResult
+    risk: RiskResult
+    modelVersion: str
+    analyzedAt: datetime

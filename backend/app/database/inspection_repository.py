@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime, timezone
+
 from bson import ObjectId
 from bson.errors import InvalidId
 
@@ -37,12 +38,14 @@ async def get_inspections_by_asset(asset_id: str) -> list[dict]:
     cursor = inspections_collection.find(
         {"assetId": asset_id}
     ).sort("inspectionDate", -1)
-async def update_inspection(inspection_id: str, update_data: dict) -> dict | None:
-    raise NotImplementedError("update_inspection: waiting on database implementation")
 
     return [doc async for doc in cursor]
 
-async def update_inspection(inspection_id: str, update_data: dict) -> dict | None:
+
+async def update_inspection(
+    inspection_id: str,
+    update_data: dict,
+) -> dict | None:
     try:
         object_id = ObjectId(inspection_id)
     except InvalidId:
@@ -52,10 +55,12 @@ async def update_inspection(inspection_id: str, update_data: dict) -> dict | Non
 
     result = await inspections_collection.update_one(
         {"_id": object_id},
-        {"$set": update_data}
+        {"$set": update_data},
     )
 
     if result.matched_count == 0:
         return None
 
-    return await inspections_collection.find_one({"_id": object_id})
+    return await inspections_collection.find_one(
+        {"_id": object_id}
+    )
