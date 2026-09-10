@@ -1,40 +1,79 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: 'DM Sans', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
 
 :root {
-  --color-bg: #F7F7F5;
-  --color-surface: #FFFFFF;
-  --color-ink: #16232E;
-  --color-ink-muted: #5B6B78;
-  --color-accent: #2F6690;
-  --color-border: #E1E1DC;
-
-  --risk-low: #3B7A57;
-  --risk-moderate: #C98A2C;
-  --risk-high: #C1542C;
-  --risk-critical: #A8322D;
-
-  --font-ui: "IBM Plex Sans", system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", monospace;
+  --primary: #F5B52F;
+  --primary-foreground: #17293D;
+  --radius: 0.7rem;
+  --background: #F4F1E9;
+  --foreground: #1B2B3D;
+  --card: #ffffff;
+  --card-foreground: #12213b;
+  --popover: #ffffff;
+  --popover-foreground: #12213b;
+  --secondary: #EBE8DE;
+  --secondary-foreground: #334155;
+  --muted: #EBE8DE;
+  --muted-foreground: #94a3b8;
+  --accent: #F9E9B7;
+  --accent-foreground: #8A650B;
+  --destructive: #e0526d;
+  --destructive-foreground: #ffffff;
+  --border: #DEDCD3;
+  --input: #D8D8D2;
+  --ring: #E8B43C;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { @apply bg-background text-foreground font-sans antialiased; margin: 0; background-image: radial-gradient(circle at 78% 8%, rgba(255,255,255,.72), transparent 26%), linear-gradient(180deg, rgba(255,255,255,.18), transparent 45%); }
+button, input, textarea, select { font: inherit; }
+button:not(:disabled), [role="button"]:not([aria-disabled="true"]), a[href], select:not(:disabled), input[type="checkbox"]:not(:disabled) { cursor: pointer; }
+button { transition: transform 160ms cubic-bezier(.23,1,.32,1), background-color 160ms ease, color 160ms ease, border-color 160ms ease, box-shadow 160ms ease; }
+button:active:not(:disabled) { transform: scale(.975); }
+.font-display { font-family: 'Space Grotesk', sans-serif; }
+
+@keyframes fade-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scan-line { 0%, 100% { transform: translateY(-42px); opacity: .15; } 50% { transform: translateY(135px); opacity: .65; } }
+.animate-fade-in { animation: fade-in .32s cubic-bezier(.23,1,.32,1) both; }
+.scan-box::after { content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 1px; background: rgba(255,255,255,.6); box-shadow: 0 0 10px rgba(255,255,255,.8); animation: scan-line 2.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
 
-body {
-  font-family: var(--font-ui);
-  background: var(--color-bg);
-  color: var(--color-ink);
-  -webkit-font-smoothing: antialiased;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  font-family: inherit;
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  ::selection { background: #dbe6ff; color: #162b59; }
 }

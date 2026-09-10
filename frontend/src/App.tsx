@@ -5,6 +5,9 @@ import AppLayout from "./components/layout/AppLayout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Assets from "./pages/Assets";
+import NewInspection from "./pages/NewInspection";
+import Detection from "./pages/Detection";
+import Analysis from "./pages/Analysis";
 
 export default function App() {
   return (
@@ -12,6 +15,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+
           <Route
             element={
               <ProtectedRoute>
@@ -21,8 +25,23 @@ export default function App() {
           >
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/assets" element={<Assets />} />
+            <Route path="/inspection/new" element={<NewInspection />} />
+
+            <Route
+              path="/inspection/detect/:id"
+              element={<Detection />}
+            />
+
+            <Route
+              path="/inspection/analysis/:id"
+              element={<Analysis />}
+            />
           </Route>
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+
+          <Route
+            path="*"
+            element={<Navigate to="/dashboard" replace />}
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
