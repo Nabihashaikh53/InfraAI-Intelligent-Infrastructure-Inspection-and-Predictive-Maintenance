@@ -17,6 +17,7 @@ class DefectOut(BaseModel):
     defectType: str
     confidence: float
     boundingBox: BoundingBox
+feature/frontend-scaffold
     severity: Optional[str] = None
     detectedAt: Optional[datetime] = None
 
@@ -38,6 +39,10 @@ class RiskResult(BaseModel):
     category: str
     breakdown: RiskBreakdown
     explanation: Optional[str] = None
+
+    severity: str | None = None
+    detectedAt: datetime
+ main
 
 
 class AnalysisOut(BaseModel):

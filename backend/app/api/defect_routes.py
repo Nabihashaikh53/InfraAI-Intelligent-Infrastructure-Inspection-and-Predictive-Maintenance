@@ -7,14 +7,17 @@ from app.database.inspection_repository import (
 )
 
 from app.database.defect_repository import (
+ feature/frontend-scaffold
     get_defects_by_inspection,
+
+    db,
+ main
 )
 
 from app.schemas.defect_schema import (
     BoundingBox,
     DefectOut,
 )
-
 
 router = APIRouter(tags=["defects"])
 
@@ -24,10 +27,15 @@ def _to_defect_out(doc: dict) -> DefectOut:
         id=str(doc["_id"]),
         inspectionId=str(doc["inspectionId"]),
         defectType=doc["defectType"],
+ feature/frontend-scaffold
         confidence=float(doc["confidence"]),
         boundingBox=BoundingBox(
             **doc["boundingBox"]
         ),
+
+        confidence=doc["confidence"],
+        boundingBox=BoundingBox(**doc["boundingBox"]),
+ main
         severity=doc.get("severity"),
         detectedAt=doc.get(
             "detectedAt",
@@ -49,6 +57,7 @@ async def get_inspection_defects(
     )
 
     if inspection is None:
+feature/frontend-scaffold
         raise HTTPException(
             status_code=404,
             detail="Inspection not found",
@@ -72,6 +81,18 @@ async def get_inspection_defects(
             status_code=400,
             detail=str(exc),
         ) from exc
+
+        raise HTTPException(
+            status_code=404,
+            detail="Inspection not found",
+        )
+
+    defects = await db.defects.find(
+        {
+            "inspectionId": inspection["_id"]
+        }
+    ).to_list(length=None)
+main
 
     return [
         _to_defect_out(defect)
