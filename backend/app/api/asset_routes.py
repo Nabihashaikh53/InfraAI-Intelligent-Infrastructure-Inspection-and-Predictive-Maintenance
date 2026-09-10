@@ -72,3 +72,21 @@ async def delete_asset_route(
     deleted = await delete_asset(asset_id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Asset not found")
+
+@router.get("/api/assets/{asset_id}/deterioration")
+async def get_asset_deterioration(
+    asset_id: str, current_user: dict = Depends(get_current_user)
+):
+    from app.database.inspection_repository import get_inspections_by_asset
+    inspections = await get_inspections_by_asset(asset_id)
+    timeline = [
+        {
+            "inspectionId": i.get("inspectionId"),
+            "date": i.get("inspectionDate"),
+            "riskScore": i.get("overallRiskScore"),
+            "riskLevel": i.get("riskLevel"),
+            "deteriorationStatus": i.get("deteriorationStatus"),
+        }
+        for i in inspections if i.get("overallRiskScore") is not None
+    ]
+    return {"assetId": asset_id, "timeline": timeline}
