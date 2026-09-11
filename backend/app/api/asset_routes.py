@@ -9,6 +9,8 @@ from app.database.asset_repository import (
     update_asset,
     delete_asset,
 )
+from app.database.connection import db
+from app.services.deterioration_engine import calculate_deterioration
 
 router = APIRouter(tags=["assets"])
 
@@ -73,20 +75,63 @@ async def delete_asset_route(
     if not deleted:
         raise HTTPException(status_code=404, detail="Asset not found")
 
+
 @router.get("/api/assets/{asset_id}/deterioration")
 async def get_asset_deterioration(
-    asset_id: str, current_user: dict = Depends(get_current_user)
+    asset_id: str,
+    current_user: dict = Depends(get_current_user),
 ):
-    from app.database.inspection_repository import get_inspections_by_asset
-    inspections = await get_inspections_by_asset(asset_id)
-    timeline = [
-        {
-            "inspectionId": i.get("inspectionId"),
-            "date": i.get("inspectionDate"),
-            "riskScore": i.get("overallRiskScore"),
-            "riskLevel": i.get("riskLevel"),
-            "deteriorationStatus": i.get("deteriorationStatus"),
-        }
-        for i in inspections if i.get("overallRiskScore") is not None
-    ]
-    return {"assetId": asset_id, "timeline": timeline}
+    asset = await get_asset_by_id(asset_id)
+
+    if asset is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Asset not found",
+        )
+
+    cursor = (
+        db.inspections
+        .find({"assetId": asset_id})
+        .sort("inspectionDate", 1)
+    )
+
+    inspections = [inspection async for inspection in cursor]
+
+    timeline = []
+
+    for inspection in inspections:
+        risk = inspection.get("risk") or {}
+        risk_score = risk.get("score")
+
+        if risk_score is None:
+            continue
+
+        inspection_date = (
+            inspection.get("inspectionDate")
+            or inspection.get("createdAt")
+        )
+
+        if inspection_date is None:
+            continue
+
+        timeline.append(
+            {
+                "date": inspection_date.isoformat()
+                if hasattr(inspection_date, "isoformat")
+                else str(inspection_date),
+                "riskScore": int(risk_score),
+            }
+        )
+
+    deterioration = calculate_deterioration(
+        timeline[-1]["riskScore"] if timeline else 0,
+        timeline[-2]["riskScore"] if len(timeline) >= 2 else None,
+    )
+
+    return {
+        "assetId": asset_id,
+        "status": deterioration["status"],
+        "riskChange": deterioration["riskChange"],
+        "explanation": deterioration["explanation"],
+        "timeline": timeline,
+    }

@@ -1,6 +1,6 @@
 """
 Generates human-readable explanations from structured inspection data.
-Template-based fallback per spec Section 42 — functions correctly with
+Template-based fallback per spec Section 42 ΓÇö functions correctly with
 zero external API dependency. A real LLM call can be added later behind
 the same function signature without changing callers.
 """
@@ -25,7 +25,7 @@ def generate_summary(inspection: dict, defects: list[dict]) -> str:
         f"({inspection.get('overallRiskScore', 0)}/100). "
         f"{inspection.get('deteriorationExplanation', '')} "
         f"Maintenance priority: {inspection.get('maintenancePriorityLabel', 'unassessed')} "
-        f"— {inspection.get('maintenancePriorityReason', '')}."
+        f"ΓÇö {inspection.get('maintenancePriorityReason', '')}."
     )
 
 
