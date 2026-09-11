@@ -3,9 +3,10 @@ import Sidebar from "./Sidebar";
 
 export default function AppLayout() {
   return (
-    <div>
+    <div className="min-h-screen bg-[#F5F3EE]">
       <Sidebar />
-      <main style={{ marginLeft: 220, padding: "32px 40px", minHeight: "100vh" }}>
+
+      <main className="ml-[272px] min-h-screen">
         <Outlet />
       </main>
     </div>

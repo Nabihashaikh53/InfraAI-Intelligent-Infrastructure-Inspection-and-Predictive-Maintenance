@@ -3,25 +3,41 @@ import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-export default function Login() {
+export default function Register() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      await login(email, password);
+      await register(name, email, password);
       navigate("/dashboard");
-    } catch {
-      setError("Incorrect email or password.");
+    } catch (err: any) {
+      setError(
+        err?.response?.data?.detail ??
+          "Registration failed. Please try a different email."
+      );
     } finally {
       setLoading(false);
     }
@@ -50,7 +66,6 @@ export default function Login() {
           justifyContent: "space-between",
         }}
       >
-        {/* Decorative circles */}
         <div
           style={{
             position: "absolute",
@@ -95,7 +110,6 @@ export default function Login() {
           >
             <div
               style={{
-                fontFamily: "var(--font-sans)",
                 fontSize: 12,
                 fontWeight: 600,
                 letterSpacing: "0.16em",
@@ -103,7 +117,7 @@ export default function Login() {
                 marginBottom: 18,
               }}
             >
-              INTELLIGENT INFRASTRUCTURE
+              BUILT FOR SMARTER INSPECTIONS
             </div>
 
             <h1
@@ -132,8 +146,8 @@ export default function Login() {
                 color: "rgba(255,255,255,0.68)",
               }}
             >
-              AI-powered infrastructure inspection and predictive
-              maintenance for safer, smarter assets.
+              Create your InfraAI inspector account and bring
+              infrastructure monitoring into one intelligent workspace.
             </p>
           </div>
         </div>
@@ -150,7 +164,7 @@ export default function Login() {
         </div>
       </section>
 
-      {/* RIGHT LOGIN PANEL */}
+      {/* RIGHT REGISTER PANEL */}
       <section
         style={{
           minHeight: "100vh",
@@ -162,7 +176,7 @@ export default function Login() {
         }}
       >
         <div style={{ width: "100%", maxWidth: 420 }}>
-          <div style={{ marginBottom: 34 }}>
+          <div style={{ marginBottom: 30 }}>
             <div
               style={{
                 fontSize: 12,
@@ -172,7 +186,7 @@ export default function Login() {
                 marginBottom: 12,
               }}
             >
-              WELCOME BACK
+              GET STARTED
             </div>
 
             <h2
@@ -185,7 +199,7 @@ export default function Login() {
                 color: "var(--foreground)",
               }}
             >
-              Enter the control room.
+              Create your account.
             </h2>
 
             <p
@@ -196,27 +210,60 @@ export default function Login() {
                 lineHeight: 1.6,
               }}
             >
-              Sign in to continue managing your infrastructure inspections.
+              Set up your inspector account to start managing infrastructure.
             </p>
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: 20 }}>
+            <div style={{ marginBottom: 17 }}>
               <label
-                htmlFor="login-email"
+                htmlFor="register-name"
                 style={{
                   display: "block",
                   marginBottom: 7,
                   fontSize: 13,
                   fontWeight: 500,
+                }}
+              >
+                Full name
+              </label>
+
+              <input
+                id="register-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                autoComplete="name"
+                placeholder="Your full name"
+                style={{
+                  width: "100%",
+                  padding: "13px 14px",
+                  border: "1px solid var(--input)",
+                  borderRadius: 7,
+                  background: "var(--card)",
                   color: "var(--foreground)",
+                  outline: "none",
+                  fontSize: 14,
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: 17 }}>
+              <label
+                htmlFor="register-email"
+                style={{
+                  display: "block",
+                  marginBottom: 7,
+                  fontSize: 13,
+                  fontWeight: 500,
                 }}
               >
                 Email
               </label>
 
               <input
-                id="login-email"
+                id="register-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -236,28 +283,63 @@ export default function Login() {
               />
             </div>
 
-            <div style={{ marginBottom: 12 }}>
+            <div style={{ marginBottom: 17 }}>
               <label
-                htmlFor="login-password"
+                htmlFor="register-password"
                 style={{
                   display: "block",
                   marginBottom: 7,
                   fontSize: 13,
                   fontWeight: 500,
-                  color: "var(--foreground)",
                 }}
               >
                 Password
               </label>
 
               <input
-                id="login-password"
+                id="register-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                autoComplete="current-password"
-                placeholder="Enter your password"
+                minLength={6}
+                autoComplete="new-password"
+                placeholder="At least 6 characters"
+                style={{
+                  width: "100%",
+                  padding: "13px 14px",
+                  border: "1px solid var(--input)",
+                  borderRadius: 7,
+                  background: "var(--card)",
+                  color: "var(--foreground)",
+                  outline: "none",
+                  fontSize: 14,
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: 12 }}>
+              <label
+                htmlFor="register-confirm-password"
+                style={{
+                  display: "block",
+                  marginBottom: 7,
+                  fontSize: 13,
+                  fontWeight: 500,
+                }}
+              >
+                Confirm password
+              </label>
+
+              <input
+                id="register-confirm-password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                minLength={6}
+                autoComplete="new-password"
+                placeholder="Repeat your password"
                 style={{
                   width: "100%",
                   padding: "13px 14px",
@@ -304,7 +386,7 @@ export default function Login() {
                 opacity: loading ? 0.7 : 1,
               }}
             >
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? "Creating account..." : "Create account"}
             </button>
 
             <div
@@ -315,16 +397,16 @@ export default function Login() {
                 color: "var(--muted-foreground)",
               }}
             >
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <Link
-                to="/register"
+                to="/login"
                 style={{
                   color: "var(--foreground)",
                   fontWeight: 600,
                   textDecoration: "none",
                 }}
               >
-                Create account
+                Sign in
               </Link>
             </div>
           </form>
