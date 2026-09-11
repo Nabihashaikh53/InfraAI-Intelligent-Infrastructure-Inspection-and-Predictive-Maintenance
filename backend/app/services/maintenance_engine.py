@@ -28,4 +28,8 @@ def calculate_priority(risk_score: int, deterioration_status: str, defect_count:
         "priority": priority,
         "label": label,
         "reason": " + ".join(reason_parts),
+ feature/llm-pdf-email
     }
+
+    }
+ main

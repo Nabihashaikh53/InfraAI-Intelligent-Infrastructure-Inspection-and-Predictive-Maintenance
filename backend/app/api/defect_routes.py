@@ -7,7 +7,7 @@ from app.database.inspection_repository import (
 )
 
 from app.database.defect_repository import (
-    db,
+    get_defects_by_inspection,
 )
 
 from app.schemas.defect_schema import (
@@ -23,13 +23,10 @@ def _to_defect_out(doc: dict) -> DefectOut:
         id=str(doc["_id"]),
         inspectionId=str(doc["inspectionId"]),
         defectType=doc["defectType"],
-        confidence=doc["confidence"],
+        confidence=float(doc["confidence"]),
         boundingBox=BoundingBox(**doc["boundingBox"]),
         severity=doc.get("severity"),
-        detectedAt=doc.get(
-            "detectedAt",
-            doc.get("createdAt"),
-        ),
+        detectedAt=doc.get("detectedAt", doc.get("createdAt")),
     )
 
 
@@ -41,9 +38,7 @@ async def get_inspection_defects(
     inspection_id: str,
     current_user: dict = Depends(get_current_user),
 ):
-    inspection = await get_inspection_by_id(
-        inspection_id
-    )
+    inspection = await get_inspection_by_id(inspection_id)
 
     if inspection is None:
         raise HTTPException(
@@ -51,13 +46,19 @@ async def get_inspection_defects(
             detail="Inspection not found",
         )
 
-    defects = await db.defects.find(
-        {
-            "inspectionId": inspection["_id"]
-        }
-    ).to_list(length=None)
+    # Only allow the owner to access inspection defects.
+    if str(inspection.get("userId", "")) != str(current_user["_id"]):
+        raise HTTPException(
+            status_code=404,
+            detail="Inspection not found",
+        )
 
-    return [
-        _to_defect_out(defect)
-        for defect in defects
-    ]
+    try:
+        defects = await get_defects_by_inspection(inspection_id)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exc),
+        ) from exc
+
+    return [_to_defect_out(defect) for defect in defects]

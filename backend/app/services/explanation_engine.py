@@ -1,6 +1,10 @@
 """
 Generates human-readable explanations from structured inspection data.
+ feature/llm-pdf-email
 Template-based fallback per spec Section 42 — functions correctly with
+
+Template-based fallback per spec Section 42 ΓÇö functions correctly with
+ main
 zero external API dependency. A real LLM call can be added later behind
 the same function signature without changing callers.
 """
@@ -25,7 +29,11 @@ def generate_summary(inspection: dict, defects: list[dict]) -> str:
         f"({inspection.get('overallRiskScore', 0)}/100). "
         f"{inspection.get('deteriorationExplanation', '')} "
         f"Maintenance priority: {inspection.get('maintenancePriorityLabel', 'unassessed')} "
+ feature/llm-pdf-email
         f"— {inspection.get('maintenancePriorityReason', '')}."
+
+        f"ΓÇö {inspection.get('maintenancePriorityReason', '')}."
+ main
     )
 
 
@@ -34,4 +42,8 @@ def generate_recommendations(defects: list[dict]) -> list[str]:
     recs = []
     for t in seen_types:
         recs.extend(RECOMMENDATIONS.get(t, [f"Inspect and assess the {t} defect further."]))
+feature/llm-pdf-email
     return recs
+
+    return recs
+ main

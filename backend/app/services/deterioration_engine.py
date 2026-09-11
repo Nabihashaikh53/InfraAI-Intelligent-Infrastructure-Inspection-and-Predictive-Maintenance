@@ -1,5 +1,9 @@
 """
+ feature/llm-pdf-email
 Deterioration engine — compares the current inspection's risk/severity
+
+Deterioration engine ΓÇö compares the current inspection's risk/severity
+main
 against the asset's most recent prior inspection.
 Per spec Section 60: with fewer than 2 inspections, explicitly report
 insufficient historical data rather than claiming a trend.
@@ -36,5 +40,10 @@ def calculate_deterioration(current_risk: int, previous_risk: int | None) -> dic
         "status": status,
         "riskChange": change,
         "explanation": f"Risk score changed by {change:+d} points since the previous inspection "
+ feature/llm-pdf-email
                         f"({previous_risk} → {current_risk}).",
     }
+
+                        f"({previous_risk} ΓåÆ {current_risk}).",
+    }
+ main
