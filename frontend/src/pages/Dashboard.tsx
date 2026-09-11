@@ -79,24 +79,24 @@ function riskClass(score: number | null | undefined) {
 
   switch (band) {
     case "Critical":
-      return "bg-red-50 text-red-700 border-red-200";
+      return "bg-[#FDE8E4] text-[#B63C2E] border-[#F2C8C1]";
 
     case "High":
-      return "bg-orange-50 text-orange-700 border-orange-200";
+      return "bg-[#FDE8E4] text-[#B63C2E] border-[#F2C8C1]";
 
     case "Medium":
-      return "bg-yellow-50 text-yellow-700 border-yellow-200";
+      return "bg-[#FFF3D6] text-[#9A6A00] border-[#F1D89A]";
 
     case "Low":
-      return "bg-emerald-50 text-emerald-700 border-emerald-200";
+      return "bg-[#E9F2EB] text-[#587760] border-[#C9DDCE]";
 
     default:
-      return "bg-slate-50 text-slate-600 border-slate-200";
+      return "bg-[#F1F0EC] text-[#667788] border-[#DDD9D0]";
   }
 }
 
 function formatDate(value: string) {
-  if (!value) return "ΓÇö";
+  if (!value) return "—";
 
   const date = new Date(value);
 
@@ -113,7 +113,7 @@ function formatDate(value: string) {
 
 function formatDefectType(value: string) {
   return value
-    .replace(/[_-]/g, " ")
+    .replace(/[\_-]/g, " ")
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
@@ -129,23 +129,21 @@ function StatCard({
   description: string;
 }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex items-start justify-between">
+    <div className="rounded-2xl border border-[#DDD9D0] bg-white p-5 shadow-[0_4px_18px_rgba(20,43,65,0.04)]">
+      <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+          <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-[#7A8997]">
             {label}
           </p>
 
-          <p className="mt-3 text-3xl font-bold tracking-tight text-[#17293D]">
+          <p className="mt-3 text-3xl font-extrabold tracking-tight text-[#142B41]">
             {value}
           </p>
 
-          <p className="mt-1 text-sm text-slate-500">
-            {description}
-          </p>
+          <p className="mt-1 text-xs text-[#7B8996]">{description}</p>
         </div>
 
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#EEF4FF] text-[#376CF3]">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF3D6] text-[#B17A00]">
           <Icon size={19} />
         </div>
       </div>
@@ -258,7 +256,7 @@ export default function Dashboard() {
         .map((asset) => ({
           name:
             asset.name.length > 18
-              ? `${asset.name.slice(0, 18)}ΓÇª`
+              ? `${asset.name.slice(0, 18)}…`
               : asset.name,
           risk: Number(asset.currentRisk),
         })),
@@ -319,7 +317,7 @@ export default function Dashboard() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#F5F3EE] px-6 py-8 text-[#17293D] lg:px-10">
+    <div className="min-h-screen bg-[#F5F3EE] px-6 py-8 text-[#142B41] lg:px-10">
       <div className="mx-auto max-w-[1400px]">
 
         {/* =====================================================
@@ -328,17 +326,17 @@ export default function Dashboard() {
 
         <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
           <div>
-            <p className="mb-2 text-xs font-bold uppercase tracking-[0.16em] text-[#376CF3]">
-              Infrastructure control room
+            <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.16em] text-[#B17A00]">
+              INFRAAI · INFRASTRUCTURE INTELLIGENCE
             </p>
 
-            <h1 className="text-3xl font-bold tracking-tight text-[#17293D]">
+            <h1 className="text-3xl font-bold tracking-tight text-[#142B41]">
               Dashboard
             </h1>
 
-            <p className="mt-2 max-w-2xl text-sm text-slate-600">
-              Live inspection, defect and asset information from your
-              InfraAI backend.
+            <p className="mt-2 max-w-2xl text-sm text-[#66788A]">
+              Monitor asset condition, inspection activity, detected defects, and
+              infrastructure risk from your live backend.
             </p>
           </div>
 
@@ -350,7 +348,7 @@ export default function Dashboard() {
 
             <Link
               to="/inspection/new"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#376CF3] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#2859D9]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#142B41] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#203B55]"
             >
               <FileCheck2 size={17} />
               New Inspection
@@ -361,7 +359,7 @@ export default function Dashboard() {
             <button
               onClick={loadDashboard}
               disabled={loading}
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-[#17293D] shadow-sm transition hover:bg-slate-50 disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#DDD9D0] bg-white px-4 py-2.5 text-sm font-semibold text-[#142B41] shadow-sm transition hover:bg-[#F1F0EC] disabled:opacity-60"
             >
               <RefreshCw
                 size={16}
@@ -394,29 +392,29 @@ export default function Dashboard() {
           <StatCard
             icon={Building2}
             label="Monitored assets"
-            value={loading ? "ΓÇö" : String(assets.length)}
+            value={loading ? "—" : String(assets.length)}
             description="Active assets in the backend"
           />
 
           <StatCard
             icon={FileCheck2}
             label="Inspections"
-            value={loading ? "ΓÇö" : String(inspections.length)}
+            value={loading ? "—" : String(inspections.length)}
             description="Stored inspection records"
           />
 
           <StatCard
             icon={ShieldAlert}
             label="Detected defects"
-            value={loading ? "ΓÇö" : String(defects.length)}
+            value={loading ? "—" : String(defects.length)}
             description="Persisted YOLO detections"
           />
 
           <StatCard
             icon={Activity}
             label="High-risk assets"
-            value={loading ? "ΓÇö" : String(highRiskAssets.length)}
-            description="Assets with risk ΓëÑ 60"
+            value={loading ? "—" : String(highRiskAssets.length)}
+            description="Assets with risk ≥ 60"
           />
         </div>
 
@@ -424,23 +422,23 @@ export default function Dashboard() {
             NEW INSPECTION ACTION CARD
         ====================================================== */}
 
-        <div className="mt-6 rounded-2xl border border-[#C9D8FF] bg-[#EEF4FF] p-6">
+        <div className="mt-6 rounded-2xl border border-[#E4D39F] bg-[#FFF8E8] p-6">
           <div className="flex flex-col justify-between gap-5 md:flex-row md:items-center">
 
             <div>
 
               <div className="flex items-center gap-3">
 
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-[#376CF3] shadow-sm">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-[#B17A00] shadow-sm">
                   <FileCheck2 size={21} />
                 </div>
 
                 <div>
-                  <h2 className="text-lg font-bold text-[#17293D]">
+                  <h2 className="text-lg font-bold text-[#142B41]">
                     Start a new inspection
                   </h2>
 
-                  <p className="mt-1 text-sm text-slate-600">
+                  <p className="mt-1 text-sm text-[#66788A]">
                     Upload an infrastructure image and run the real YOLO
                     defect analysis.
                   </p>
@@ -449,7 +447,7 @@ export default function Dashboard() {
 
               {/* PROCESS STEPS */}
 
-              <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-slate-600">
+              <div className="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-[#66788A]">
 
                 <span className="rounded-full bg-white px-3 py-1.5">
                   1. Select asset
@@ -474,7 +472,7 @@ export default function Dashboard() {
 
             <Link
               to="/inspection/new"
-              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#376CF3] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#2859D9]"
+              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#142B41] px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#203B55]"
             >
               Upload Inspection Image
             </Link>
@@ -490,21 +488,21 @@ export default function Dashboard() {
 
           {/* CURRENT ASSET RISK */}
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <section className="rounded-2xl border border-[#DDD9D0] bg-white p-6 shadow-[0_4px_18px_rgba(20,43,65,0.04)]">
 
             <div className="mb-5 flex items-start justify-between">
 
               <div>
-                <h2 className="text-lg font-bold text-[#17293D]">
+                <h2 className="text-lg font-bold text-[#142B41]">
                   Current asset risk
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-[#7B8996]">
                   Real risk scores currently stored on assets.
                 </p>
               </div>
 
-              <span className="rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-600">
+              <span className="rounded-lg bg-[#F1F0EC] px-3 py-1.5 text-xs font-semibold text-[#667788]">
                 {assetsWithRisk} assessed
               </span>
 
@@ -550,7 +548,7 @@ export default function Dashboard() {
                     <Bar
                       dataKey="risk"
                       radius={[0, 6, 6, 0]}
-                      fill="#376CF3"
+                      fill="#F0A91D"
                     />
 
                   </BarChart>
@@ -559,20 +557,20 @@ export default function Dashboard() {
 
               ) : (
 
-                <div className="flex h-full items-center justify-center rounded-xl bg-slate-50 text-center">
+                <div className="flex h-full items-center justify-center rounded-xl bg-[#F7F6F2] text-center">
 
                   <div>
 
                     <Activity
                       size={28}
-                      className="mx-auto mb-3 text-slate-300"
+                      className="mx-auto mb-3 text-[#C5C0B5]"
                     />
 
-                    <p className="font-semibold text-slate-600">
+                    <p className="font-semibold text-[#66788A]">
                       No risk scores yet
                     </p>
 
-                    <p className="mt-1 text-sm text-slate-400">
+                    <p className="mt-1 text-sm text-[#9AA4AD]">
                       Risk data will appear here once assets are scored.
                     </p>
 
@@ -586,15 +584,15 @@ export default function Dashboard() {
 
           {/* DEFECT DISTRIBUTION */}
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <section className="rounded-2xl border border-[#DDD9D0] bg-white p-6 shadow-[0_4px_18px_rgba(20,43,65,0.04)]">
 
             <div className="mb-5">
 
-              <h2 className="text-lg font-bold text-[#17293D]">
+              <h2 className="text-lg font-bold text-[#142B41]">
                 Defect distribution
               </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-[#7B8996]">
                 Actual persisted detections grouped by defect type.
               </p>
 
@@ -624,11 +622,11 @@ export default function Dashboard() {
                           key={`cell-${index}`}
                           fill={
                             [
-                              "#376CF3",
-                              "#F5B52F",
-                              "#E86A5B",
-                              "#4BAA83",
-                              "#7C6BE8",
+                              "#F0A91D",
+                              "#D95C47",
+                              "#6D9277",
+                              "#6D8194",
+                              "#A58A52",
                             ][index % 5]
                           }
                         />
@@ -645,20 +643,20 @@ export default function Dashboard() {
 
               ) : (
 
-                <div className="flex h-full items-center justify-center rounded-xl bg-slate-50 text-center">
+                <div className="flex h-full items-center justify-center rounded-xl bg-[#F7F6F2] text-center">
 
                   <div>
 
                     <CheckCircle2
                       size={28}
-                      className="mx-auto mb-3 text-emerald-500"
+                      className="mx-auto mb-3 text-[#6D9277]"
                     />
 
-                    <p className="font-semibold text-slate-600">
+                    <p className="font-semibold text-[#66788A]">
                       No defects detected yet
                     </p>
 
-                    <p className="mt-1 text-sm text-slate-400">
+                    <p className="mt-1 text-sm text-[#9AA4AD]">
                       Analyze an inspection to populate this chart.
                     </p>
 
@@ -680,13 +678,13 @@ export default function Dashboard() {
 
           {/* RISK OVERVIEW */}
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <section className="rounded-2xl border border-[#DDD9D0] bg-white p-6 shadow-[0_4px_18px_rgba(20,43,65,0.04)]">
 
-            <h2 className="text-lg font-bold text-[#17293D]">
+            <h2 className="text-lg font-bold text-[#142B41]">
               Risk overview
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 text-sm text-[#7B8996]">
               Current asset condition from the backend.
             </p>
 
@@ -694,7 +692,7 @@ export default function Dashboard() {
 
               {assets.length === 0 && !loading && (
 
-                <p className="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">
+                <p className="rounded-xl bg-[#F7F6F2] p-4 text-sm text-[#7B8996]">
                   No assets registered yet.
                 </p>
 
@@ -712,16 +710,16 @@ export default function Dashboard() {
 
                   <div
                     key={asset.id}
-                    className="flex items-center justify-between gap-3 rounded-xl border border-slate-100 p-3"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-[#E8E5DE] p-3"
                   >
 
                     <div className="min-w-0">
 
-                      <p className="truncate text-sm font-semibold text-[#17293D]">
+                      <p className="truncate text-sm font-semibold text-[#142B41]">
                         {asset.name}
                       </p>
 
-                      <p className="mt-1 flex items-center gap-1 truncate text-xs text-slate-500">
+                      <p className="mt-1 flex items-center gap-1 truncate text-xs text-[#7B8996]">
                         <MapPin size={12} />
 
                         {asset.location || "Location not provided"}
@@ -736,7 +734,7 @@ export default function Dashboard() {
                     >
 
                       {asset.currentRisk != null
-                        ? `${asset.currentRisk.toFixed(0)} ┬╖ ${riskBand(
+                        ? `${asset.currentRisk.toFixed(0)} · ${riskBand(
                             asset.currentRisk,
                           )}`
                         : "Unassessed"}
@@ -752,17 +750,17 @@ export default function Dashboard() {
 
           {/* RECENT INSPECTIONS */}
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <section className="rounded-2xl border border-[#DDD9D0] bg-white p-6 shadow-[0_4px_18px_rgba(20,43,65,0.04)]">
 
             <div className="mb-5 flex items-start justify-between">
 
               <div>
 
-                <h2 className="text-lg font-bold text-[#17293D]">
+                <h2 className="text-lg font-bold text-[#142B41]">
                   Recent inspections
                 </h2>
 
-                <p className="mt-1 text-sm text-slate-500">
+                <p className="mt-1 text-sm text-[#7B8996]">
                   Latest inspection records returned by the backend.
                 </p>
 
@@ -770,7 +768,7 @@ export default function Dashboard() {
 
               <Link
                 to="/assets"
-                className="text-sm font-semibold text-[#376CF3] hover:underline"
+                className="text-sm font-semibold text-[#B17A00] hover:underline"
               >
                 View assets
               </Link>
@@ -783,21 +781,21 @@ export default function Dashboard() {
 
                 <thead>
 
-                  <tr className="border-b border-slate-100 text-left">
+                  <tr className="border-b border-[#E8E5DE] text-left">
 
-                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-[#8A959F]">
                       Inspection
                     </th>
 
-                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-[#8A959F]">
                       Asset
                     </th>
 
-                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-[#8A959F]">
                       Date
                     </th>
 
-                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    <th className="pb-3 text-xs font-bold uppercase tracking-wider text-[#8A959F]">
                       Status
                     </th>
 
@@ -811,24 +809,24 @@ export default function Dashboard() {
 
                     <tr
                       key={inspection.id}
-                      className="border-b border-slate-50 last:border-0"
+                      className="border-b border-[#F1EFEA] last:border-0"
                     >
 
-                      <td className="py-4 text-sm font-semibold text-[#17293D]">
+                      <td className="py-4 text-sm font-semibold text-[#142B41]">
                         {inspection.inspectionId}
                       </td>
 
-                      <td className="py-4 text-sm text-slate-600">
+                      <td className="py-4 text-sm text-[#66788A]">
                         {inspection.assetName}
                       </td>
 
-                      <td className="py-4 text-sm text-slate-500">
+                      <td className="py-4 text-sm text-[#7B8996]">
                         {formatDate(inspection.inspectionDate)}
                       </td>
 
                       <td className="py-4">
 
-                        <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">
+                        <span className="rounded-full bg-[#F1F0EC] px-2.5 py-1 text-xs font-semibold text-[#66788A]">
                           {inspection.status}
                         </span>
 
@@ -844,7 +842,7 @@ export default function Dashboard() {
 
                       <td
                         colSpan={4}
-                        className="py-10 text-center text-sm text-slate-400"
+                        className="py-10 text-center text-sm text-[#9AA4AD]"
                       >
                         No inspections have been uploaded yet.
                       </td>
@@ -859,11 +857,11 @@ export default function Dashboard() {
 
             </div>
 
-            <div className="mt-5 flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-3 text-xs text-slate-500">
+            <div className="mt-5 flex items-center gap-2 rounded-xl bg-[#F7F6F2] px-4 py-3 text-xs text-[#7B8996]">
 
               <CheckCircle2
                 size={14}
-                className="text-emerald-500"
+                className="text-[#6D9277]"
               />
 
               {analyzedInspections} inspection
