@@ -140,7 +140,7 @@ export default function Analysis() {
             </p>
 
             <p className="mt-3 text-4xl font-bold text-[#376CF3]">
-              {quality?.score ?? "—"}
+              {quality?.score ?? "ΓÇö"}
               {quality ? "/100" : ""}
             </p>
 
@@ -151,7 +151,7 @@ export default function Analysis() {
             {quality?.issues && quality.issues.length > 0 && (
               <ul className="mt-4 space-y-1 text-xs text-slate-500">
                 {quality.issues.map((issue) => (
-                  <li key={issue}>• {issue}</li>
+                  <li key={issue}>ΓÇó {issue}</li>
                 ))}
               </ul>
             )}
@@ -170,7 +170,7 @@ export default function Analysis() {
             </p>
 
             <p className="mt-3 text-4xl font-bold text-orange-600">
-              {severity?.score ?? "—"}
+              {severity?.score ?? "ΓÇö"}
               {severity ? "/100" : ""}
             </p>
 
@@ -194,7 +194,7 @@ export default function Analysis() {
 
               <div>
                 <p className="text-4xl font-bold">
-                  {risk?.score ?? "—"}
+                  {risk?.score ?? "ΓÇö"}
                   {risk ? "/100" : ""}
                 </p>
 

@@ -142,23 +142,33 @@ export default function AssetDetail() {
     Promise.all([
       api.get(`/api/assets/${id}`),
       api.get(`/api/assets/${id}/inspections`),
-      api.get(`/api/assets/${id}/deterioration`).catch(() => ({
-        data: { timeline: [] },
-      })),
+      api
+        .get(`/api/assets/${id}/deterioration`)
+        .catch(() => ({
+          data: {
+            timeline: [],
+          },
+        })),
     ])
-      .then(([assetResponse, inspectionsResponse, deteriorationResponse]) => {
-        setAsset(assetResponse.data);
-        setInspections(inspectionsResponse.data);
+      .then(
+        ([
+          assetResponse,
+          inspectionsResponse,
+          deteriorationResponse,
+        ]) => {
+          setAsset(assetResponse.data);
+          setInspections(inspectionsResponse.data);
 
-        setTimeline(
-          (deteriorationResponse.data.timeline ?? []).map(
-            (point: any) => ({
-              date: point.date,
-              riskScore: Number(point.riskScore ?? 0),
-            })
-          )
-        );
-      })
+          setTimeline(
+            (deteriorationResponse.data.timeline ?? []).map(
+              (point: any) => ({
+                date: point.date,
+                riskScore: Number(point.riskScore ?? 0),
+              })
+            )
+          );
+        }
+      )
       .finally(() => {
         setLoading(false);
       });
@@ -166,7 +176,11 @@ export default function AssetDetail() {
 
   if (loading) {
     return (
-      <p style={{ color: "var(--color-ink-muted)" }}>
+      <p
+        style={{
+          color: "var(--color-ink-muted)",
+        }}
+      >
         Loading asset…
       </p>
     );
@@ -174,15 +188,27 @@ export default function AssetDetail() {
 
   if (!asset) {
     return (
-      <p style={{ color: "var(--color-ink-muted)" }}>
+      <p
+        style={{
+          color: "var(--color-ink-muted)",
+        }}
+      >
         Asset not found.
       </p>
     );
   }
 
   return (
-    <div style={{ maxWidth: 800 }}>
-      <div style={{ marginBottom: 24 }}>
+    <div
+      style={{
+        maxWidth: 800,
+      }}
+    >
+      <div
+        style={{
+          marginBottom: 24,
+        }}
+      >
         <Link
           to="/dashboard"
           style={{
@@ -258,7 +284,15 @@ export default function AssetDetail() {
         </div>
       </section>
 
-      <section style={{ marginBottom: 24 }}>
+      <section
+        style={{
+          marginBottom: 24,
+          padding: 20,
+          border: "1px solid var(--color-border)",
+          borderRadius: 8,
+          background: "var(--color-surface)",
+        }}
+      >
         <h2
           style={{
             fontSize: 16,

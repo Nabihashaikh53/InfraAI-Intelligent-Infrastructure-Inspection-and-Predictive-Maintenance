@@ -21,7 +21,7 @@ export async function uploadInspectionImage(file: File) {
   formData.append("file", file);
 
   const response = await api.post(
-    "/api/inspections/upload-image",
+    "/api/inspections/upload",
     formData
   );
 

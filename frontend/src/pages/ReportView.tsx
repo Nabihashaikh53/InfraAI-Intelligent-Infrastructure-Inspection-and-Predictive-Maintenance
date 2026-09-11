@@ -62,7 +62,7 @@ export default function ReportView() {
   if (loading) {
     return (
       <p style={{ color: "var(--color-ink-muted)" }}>
-        Loading report…
+        Loading reportΓÇª
       </p>
     );
   }
@@ -89,7 +89,7 @@ export default function ReportView() {
           fontFamily: "var(--font-mono)",
         }}
       >
-        {report.header.inspectionId} · {report.asset.assetId} —{" "}
+        {report.header.inspectionId} ┬╖ {report.asset.assetId} ΓÇö{" "}
         {report.asset.name}
       </p>
 
@@ -107,7 +107,7 @@ export default function ReportView() {
           {report.overallAssessment.deteriorationStatus}
           <br />
           Maintenance Priority:{" "}
-          <strong>{report.maintenancePriority.priority}</strong> —{" "}
+          <strong>{report.maintenancePriority.priority}</strong> ΓÇö{" "}
           {report.maintenancePriority.label}
         </p>
       </section>
@@ -126,8 +126,8 @@ export default function ReportView() {
               borderBottom: "1px solid var(--color-border)",
             }}
           >
-            {defect.type} —{" "}
-            {(defect.confidence * 100).toFixed(1)}% confidence —{" "}
+            {defect.type} ΓÇö{" "}
+            {(defect.confidence * 100).toFixed(1)}% confidence ΓÇö{" "}
             {defect.severity}
           </div>
         ))}

@@ -96,7 +96,7 @@ function riskClass(score: number | null | undefined) {
 }
 
 function formatDate(value: string) {
-  if (!value) return "—";
+  if (!value) return "ΓÇö";
 
   const date = new Date(value);
 
@@ -258,7 +258,7 @@ export default function Dashboard() {
         .map((asset) => ({
           name:
             asset.name.length > 18
-              ? `${asset.name.slice(0, 18)}…`
+              ? `${asset.name.slice(0, 18)}ΓÇª`
               : asset.name,
           risk: Number(asset.currentRisk),
         })),
@@ -394,29 +394,29 @@ export default function Dashboard() {
           <StatCard
             icon={Building2}
             label="Monitored assets"
-            value={loading ? "—" : String(assets.length)}
+            value={loading ? "ΓÇö" : String(assets.length)}
             description="Active assets in the backend"
           />
 
           <StatCard
             icon={FileCheck2}
             label="Inspections"
-            value={loading ? "—" : String(inspections.length)}
+            value={loading ? "ΓÇö" : String(inspections.length)}
             description="Stored inspection records"
           />
 
           <StatCard
             icon={ShieldAlert}
             label="Detected defects"
-            value={loading ? "—" : String(defects.length)}
+            value={loading ? "ΓÇö" : String(defects.length)}
             description="Persisted YOLO detections"
           />
 
           <StatCard
             icon={Activity}
             label="High-risk assets"
-            value={loading ? "—" : String(highRiskAssets.length)}
-            description="Assets with risk ≥ 60"
+            value={loading ? "ΓÇö" : String(highRiskAssets.length)}
+            description="Assets with risk ΓëÑ 60"
           />
         </div>
 
@@ -736,7 +736,7 @@ export default function Dashboard() {
                     >
 
                       {asset.currentRisk != null
-                        ? `${asset.currentRisk.toFixed(0)} · ${riskBand(
+                        ? `${asset.currentRisk.toFixed(0)} ┬╖ ${riskBand(
                             asset.currentRisk,
                           )}`
                         : "Unassessed"}
